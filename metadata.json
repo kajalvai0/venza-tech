@@ -1,0 +1,7 @@
+{
+  "name": "Venza - Your Trusted Gadget Partner",
+  "description": "A high-end e-commerce platform for gadgets in Bangladesh, featuring mobile phones, laptops, and smart accessories.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
