@@ -4,10 +4,31 @@ import { Product, Category, Feature, Slide, SiteSettings } from './types';
 export const INITIAL_SITE_SETTINGS: SiteSettings = {
   logoUrl: 'https://cdn-icons-png.flaticon.com/512/3507/3507102.png',
   logoText: 'VENZA TECH',
-  useImageLogo: false, // Set to false to prioritize the animated 3D Text Logo
+  useImageLogo: false,
   serviceButtonText: 'এক্সচেঞ্জ অফার',
   serviceButtonLink: '#',
-  contactNumber: '+৮৮০ ১৭৪৮-১২৩৪৫৬'
+  contactNumber: '+৮৮০ ১৭৪৮-১২৩৪৫৬',
+  footerAbout: 'ভেনজা (Venza) বাংলাদেশের অন্যতম একটি প্রিমিয়াম গ্যাজেট শপ। আমাদের মূল লক্ষ্য সুলভ মূল্যে সর্বোচ্চ মানের পণ্য এবং সেবা নিশ্চিত করা।',
+  address: 'বদলগাছী, নওগাঁ, রাজশাহী, বাংলাদেশ',
+  email: 'support@venza.com.bd',
+  facebookUrl: '#',
+  instagramUrl: '#',
+  youtubeUrl: '#',
+  twitterUrl: '#',
+  importantLinks: [
+    { label: 'আমাদের সম্পর্কে', url: '#' },
+    { label: 'প্রাইভেসি পলিসি', url: '#' },
+    { label: 'রিটার্ন ও রিফান্ড', url: '#' },
+    { label: 'শর্তাবলী', url: '#' },
+    { label: 'ব্লগ', url: '#' }
+  ],
+  popularCategories: [
+    { label: 'স্মার্টফোন', url: '#' },
+    { label: 'ল্যাপটপ', url: '#' },
+    { label: 'হেডফোন', url: '#' },
+    { label: 'স্মার্টওয়াচ', url: '#' },
+    { label: 'ক্যামেরা', url: '#' }
+  ]
 };
 
 export const INITIAL_FEATURES: Feature[] = [

@@ -22,9 +22,18 @@ import {
   Globe,
   Smartphone,
   Upload,
-  ChevronRight
+  ChevronRight,
+  Monitor,
+  Facebook,
+  Instagram,
+  Youtube,
+  Twitter,
+  MapPin,
+  Mail,
+  Phone,
+  Link as LinkIcon
 } from 'lucide-react';
-import { Product, Category, Feature, Slide, SiteSettings } from '../types';
+import { Product, Category, Feature, Slide, SiteSettings, LinkItem } from '../types';
 
 interface AdminPanelProps {
   products: Product[];
@@ -127,6 +136,25 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
     setFormData({});
   };
 
+  // Helper to handle link changes
+  const handleLinkChange = (listName: 'importantLinks' | 'popularCategories', index: number, field: keyof LinkItem, value: string) => {
+    const newList = [...settings[listName]];
+    newList[index] = { ...newList[index], [field]: value };
+    setSettings({ ...settings, [listName]: newList });
+  };
+
+  const addLink = (listName: 'importantLinks' | 'popularCategories') => {
+    setSettings({
+      ...settings,
+      [listName]: [...settings[listName], { label: 'নতুন লিঙ্ক', url: '#' }]
+    });
+  };
+
+  const removeLink = (listName: 'importantLinks' | 'popularCategories', index: number) => {
+    const newList = settings[listName].filter((_, i) => i !== index);
+    setSettings({ ...settings, [listName]: newList });
+  };
+
   if (!isAuthenticated) {
     return (
       <div className="fixed inset-0 z-[200] bg-slate-950 flex items-center justify-center p-4 font-sans">
@@ -173,7 +201,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
             { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
             { id: 'products', label: 'Products', icon: Package },
             { id: 'categories', label: 'Categories', icon: Layers },
-            { id: 'slides', label: 'Hero Banner', icon: ImageIcon },
+            { id: 'slides', label: 'Hero Slides', icon: Monitor },
             { id: 'features', label: 'Features', icon: Smartphone },
             { id: 'settings', label: 'Site Settings', icon: SettingsIcon },
           ].map(item => (
@@ -209,7 +237,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
           )}
         </header>
 
-        {isAdding && (activeTab === 'products' || activeTab === 'categories') ? (
+        {isAdding && (activeTab === 'products' || activeTab === 'categories' || activeTab === 'slides') ? (
           <div className="max-w-4xl bg-slate-900 rounded-3xl border border-slate-800 p-8 animate-in slide-in-from-bottom-4 duration-300">
             <div className="flex justify-between items-center mb-8">
               <h2 className="text-2xl font-bold text-white">{editingId ? 'আপডেট করুন' : 'নতুন যোগ করুন'}</h2>
@@ -220,14 +248,50 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-slate-400 text-xs font-bold uppercase mb-2">নাম</label>
+                    <label className="block text-slate-400 text-xs font-bold uppercase mb-2">
+                      {activeTab === 'slides' ? 'স্লাইড শিরোনাম' : 'নাম'}
+                    </label>
                     <input 
                       className="w-full bg-slate-800 border-slate-700 text-white rounded-xl px-4 py-3 border focus:ring-2 focus:ring-blue-500 outline-none"
-                      value={formData.name || ''} 
-                      onChange={e => setFormData({...formData, name: e.target.value})}
+                      value={formData.name || formData.title || ''} 
+                      onChange={e => {
+                        if (activeTab === 'slides') setFormData({...formData, title: e.target.value});
+                        else setFormData({...formData, name: e.target.value});
+                      }}
                       required
                     />
                   </div>
+
+                  {activeTab === 'slides' && (
+                    <>
+                      <div>
+                        <label className="block text-slate-400 text-xs font-bold uppercase mb-2">হাইলাইট টেক্সট (যেমন: ৫০% ছাড়)</label>
+                        <input 
+                          className="w-full bg-slate-800 border-slate-700 text-white rounded-xl px-4 py-3 border focus:ring-2 focus:ring-blue-500 outline-none"
+                          value={formData.highlight || ''} 
+                          onChange={e => setFormData({...formData, highlight: e.target.value})}
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-slate-400 text-xs font-bold uppercase mb-2">সাব-টাইটেল (বিস্তারিত)</label>
+                        <textarea 
+                          rows={3}
+                          className="w-full bg-slate-800 border-slate-700 text-white rounded-xl px-4 py-3 border focus:ring-2 focus:ring-blue-500 outline-none"
+                          value={formData.subtitle || ''} 
+                          onChange={e => setFormData({...formData, subtitle: e.target.value})}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-slate-400 text-xs font-bold uppercase mb-2">বাটন টেক্সট (CTA)</label>
+                        <input 
+                          className="w-full bg-slate-800 border-slate-700 text-white rounded-xl px-4 py-3 border focus:ring-2 focus:ring-blue-500 outline-none"
+                          value={formData.cta || 'এখনই কিনুন'} 
+                          onChange={e => setFormData({...formData, cta: e.target.value})}
+                        />
+                      </div>
+                    </>
+                  )}
                   
                   {activeTab === 'products' && (
                     <>
@@ -282,7 +346,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                 </div>
 
                 <div className="space-y-4">
-                  <label className="block text-slate-400 text-xs font-bold uppercase mb-2">পণ্য বা ক্যাটাগরির ছবি</label>
+                  <label className="block text-slate-400 text-xs font-bold uppercase mb-2">ইমেজ (ছবি)</label>
                   <div 
                     onClick={() => fileInputRef.current?.click()}
                     className="aspect-video bg-slate-800 border-2 border-dashed border-slate-700 rounded-3xl flex flex-col items-center justify-center cursor-pointer hover:border-blue-500 hover:bg-slate-800/50 transition-all overflow-hidden relative group"
@@ -310,15 +374,12 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                       onChange={handleImageUpload} 
                     />
                   </div>
-                  <div className="text-slate-500 text-[10px] text-center italic mt-2">
-                    *ছবির সাইজ কম রাখার চেষ্টা করুন।
-                  </div>
                 </div>
               </div>
 
               <div className="pt-6 flex gap-4">
                 <button type="submit" className="flex-1 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-bold text-lg shadow-lg flex items-center justify-center gap-2 transition-all">
-                  <Save size={22} /> {editingId ? 'আপডেট করুন' : 'সংরক্ষণ করুন'}
+                  <Save size={22} /> {editingId ? 'আপডেট করুন' : 'সাবমিট করুন'}
                 </button>
                 <button type="button" onClick={() => setIsAdding(false)} className="px-8 py-4 bg-slate-800 hover:bg-slate-700 text-white rounded-2xl font-bold">বাতিল</button>
               </div>
@@ -327,7 +388,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
         ) : null}
 
         {!isAdding && activeTab === 'products' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {products.map(product => (
               <div key={product.id} className="bg-slate-900 border border-slate-800 rounded-3xl p-5 group">
                 <div className="aspect-square bg-slate-800 rounded-2xl mb-4 overflow-hidden relative">
@@ -339,7 +400,10 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                 </div>
                 <h3 className="text-lg font-bold text-white line-clamp-1">{product.name}</h3>
                 <div className="flex justify-between items-center mt-3">
-                  <span className="text-blue-400 font-bold text-lg">৳ {product.price}</span>
+                  <div className="flex flex-col">
+                    <span className="text-blue-400 font-bold text-lg">৳ {product.price}</span>
+                    {product.originalPrice && <span className="text-slate-600 text-[10px] line-through">৳ {product.originalPrice}</span>}
+                  </div>
                   <span className="text-slate-500 text-xs px-3 py-1 bg-slate-800 rounded-full">{product.category}</span>
                 </div>
               </div>
@@ -347,74 +411,120 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
           </div>
         )}
 
-        {!isAdding && activeTab === 'categories' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {categories.map(cat => (
-              <div key={cat.id} className="bg-slate-900 border border-slate-800 rounded-3xl p-5 relative overflow-hidden group">
-                <img src={cat.image} className="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:scale-110 transition-transform duration-700" alt={cat.name} />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent" />
-                <div className="relative z-10 flex flex-col h-full justify-between pt-12">
-                  <div>
-                    <h3 className="text-xl font-bold text-white">{cat.name}</h3>
-                    <p className="text-slate-400 text-xs mt-1">{cat.count}</p>
-                  </div>
-                  <div className="flex gap-2 mt-6">
-                    <button onClick={() => startEditing(cat)} className="flex-1 py-2 bg-slate-800 hover:bg-blue-600 text-white rounded-xl font-bold text-xs transition-colors">Edit</button>
-                    <button onClick={() => handleDelete('category', cat.id)} className="p-2 bg-slate-800 hover:bg-red-600 text-white rounded-xl transition-colors"><Trash2 size={16} /></button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
         {activeTab === 'settings' && (
-          <div className="bg-slate-900 rounded-3xl border border-slate-800 p-8 max-w-4xl mx-auto shadow-2xl">
-            <h2 className="text-2xl font-bold text-white mb-8 flex items-center gap-2">
-              <Globe className="text-blue-500" /> হোমপেজ ও লোগো কন্ট্রোল
-            </h2>
-            <form onSubmit={handleSettingsSubmit} className="space-y-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="space-y-6">
-                  <h3 className="text-blue-400 font-bold text-sm uppercase tracking-widest flex items-center gap-2">
-                    <span className="w-8 h-px bg-blue-500/30"></span> লোগো সেটিংস
-                  </h3>
-                  <div className="flex items-center justify-between bg-slate-800/50 p-5 rounded-2xl border border-slate-700/50">
-                    <label className="text-white text-sm font-medium">ইমেজ লোগো ব্যবহার করুন?</label>
-                    <input 
-                      type="checkbox" checked={settings.useImageLogo} 
-                      onChange={e => setSettings({...settings, useImageLogo: e.target.checked})}
-                      className="w-6 h-6 rounded-lg accent-blue-600"
-                    />
+          <div className="space-y-8 pb-20">
+            {/* Logo & Basic Settings */}
+            <div className="bg-slate-900 rounded-3xl border border-slate-800 p-8 max-w-5xl mx-auto shadow-2xl">
+              <h2 className="text-2xl font-bold text-white mb-8 flex items-center gap-2">
+                <Globe className="text-blue-500" /> হোমপেজ ও লোগো কন্ট্রোল
+              </h2>
+              <form onSubmit={handleSettingsSubmit} className="space-y-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-6">
+                    <h3 className="text-blue-400 font-bold text-sm uppercase tracking-widest">লোগো সেটিংস</h3>
+                    <div className="flex items-center justify-between bg-slate-800/50 p-5 rounded-2xl border border-slate-700/50">
+                      <label className="text-white text-sm font-medium">ইমেজ লোগো ব্যবহার করুন?</label>
+                      <input 
+                        type="checkbox" checked={settings.useImageLogo} 
+                        onChange={e => setSettings({...settings, useImageLogo: e.target.checked})}
+                        className="w-6 h-6 rounded-lg accent-blue-600"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-slate-400 text-[10px] font-bold uppercase ml-2">লোগো টেক্সট</label>
+                      <input className="w-full bg-slate-800 border-slate-700 text-white rounded-2xl px-5 py-4 border focus:ring-2 focus:ring-blue-500 outline-none transition-all" value={settings.logoText} onChange={e => setSettings({...settings, logoText: e.target.value})} />
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-slate-400 text-[10px] font-bold uppercase ml-2">লোগো টেক্সট (যেমন: VENZA TECH)</label>
-                    <input className="w-full bg-slate-800 border-slate-700 text-white rounded-2xl px-5 py-4 border focus:ring-2 focus:ring-blue-500 outline-none transition-all" value={settings.logoText} onChange={e => setSettings({...settings, logoText: e.target.value})} />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-slate-400 text-[10px] font-bold uppercase ml-2">লোগো ইমেজ URL</label>
-                    <input className="w-full bg-slate-800 border-slate-700 text-white rounded-2xl px-5 py-4 border focus:ring-2 focus:ring-blue-500 outline-none transition-all" value={settings.logoUrl} onChange={e => setSettings({...settings, logoUrl: e.target.value})} />
+                  <div className="space-y-6">
+                    <h3 className="text-blue-400 font-bold text-sm uppercase tracking-widest">সার্ভিস ও কন্টাক্ট</h3>
+                    <div className="space-y-2">
+                      <label className="text-slate-400 text-[10px] font-bold uppercase ml-2">সার্ভিস বাটন টেক্সট</label>
+                      <input className="w-full bg-slate-800 border-slate-700 text-white rounded-2xl px-5 py-4 border focus:ring-2 focus:ring-blue-500 outline-none transition-all" value={settings.serviceButtonText} onChange={e => setSettings({...settings, serviceButtonText: e.target.value})} />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-slate-400 text-[10px] font-bold uppercase ml-2">কন্টাক্ট নাম্বার</label>
+                      <input className="w-full bg-slate-800 border-slate-700 text-white rounded-2xl px-5 py-4 border focus:ring-2 focus:ring-blue-500 outline-none transition-all" value={settings.contactNumber} onChange={e => setSettings({...settings, contactNumber: e.target.value})} />
+                    </div>
                   </div>
                 </div>
 
-                <div className="space-y-6">
-                  <h3 className="text-blue-400 font-bold text-sm uppercase tracking-widest flex items-center gap-2">
-                    <span className="w-8 h-px bg-blue-500/30"></span> সার্ভিস বাটন ও কন্টাক্ট
-                  </h3>
-                  <div className="space-y-2">
-                    <label className="text-slate-400 text-[10px] font-bold uppercase ml-2">সার্ভিস বাটন টেক্সট</label>
-                    <input className="w-full bg-slate-800 border-slate-700 text-white rounded-2xl px-5 py-4 border focus:ring-2 focus:ring-blue-500 outline-none transition-all" value={settings.serviceButtonText} onChange={e => setSettings({...settings, serviceButtonText: e.target.value})} />
+                {/* Footer Content */}
+                <hr className="border-slate-800" />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-6">
+                    <h3 className="text-purple-400 font-bold text-sm uppercase tracking-widest">ফুটার ও যোগাযোগ</h3>
+                    <div className="space-y-2">
+                      <label className="text-slate-400 text-[10px] font-bold uppercase ml-2">ফুটার 'আমাদের সম্পর্কে'</label>
+                      <textarea rows={3} className="w-full bg-slate-800 border-slate-700 text-white rounded-2xl px-5 py-4 border focus:ring-2 focus:ring-blue-500 outline-none transition-all" value={settings.footerAbout} onChange={e => setSettings({...settings, footerAbout: e.target.value})} />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-slate-400 text-[10px] font-bold uppercase ml-2">ঠিকানা</label>
+                      <input className="w-full bg-slate-800 border-slate-700 text-white rounded-2xl px-5 py-4 border focus:ring-2 focus:ring-blue-500 outline-none transition-all" value={settings.address} onChange={e => setSettings({...settings, address: e.target.value})} />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-slate-400 text-[10px] font-bold uppercase ml-2">ইমেইল</label>
+                      <input className="w-full bg-slate-800 border-slate-700 text-white rounded-2xl px-5 py-4 border focus:ring-2 focus:ring-blue-500 outline-none transition-all" value={settings.email} onChange={e => setSettings({...settings, email: e.target.value})} />
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-slate-400 text-[10px] font-bold uppercase ml-2">কন্টাক্ট নাম্বার</label>
-                    <input className="w-full bg-slate-800 border-slate-700 text-white rounded-2xl px-5 py-4 border focus:ring-2 focus:ring-blue-500 outline-none transition-all" value={settings.contactNumber} onChange={e => setSettings({...settings, contactNumber: e.target.value})} />
+                  <div className="space-y-6">
+                    <h3 className="text-orange-400 font-bold text-sm uppercase tracking-widest">সোশ্যাল মিডিয়া</h3>
+                    <div className="grid gap-4">
+                      <div className="flex items-center gap-3 bg-slate-800/50 p-3 rounded-2xl border border-slate-700/50">
+                         <Facebook className="text-blue-500 shrink-0" size={20} />
+                         <input className="bg-transparent w-full text-white outline-none text-sm" placeholder="Facebook URL" value={settings.facebookUrl} onChange={e => setSettings({...settings, facebookUrl: e.target.value})} />
+                      </div>
+                      <div className="flex items-center gap-3 bg-slate-800/50 p-3 rounded-2xl border border-slate-700/50">
+                         <Instagram className="text-pink-500 shrink-0" size={20} />
+                         <input className="bg-transparent w-full text-white outline-none text-sm" placeholder="Instagram URL" value={settings.instagramUrl} onChange={e => setSettings({...settings, instagramUrl: e.target.value})} />
+                      </div>
+                      <div className="flex items-center gap-3 bg-slate-800/50 p-3 rounded-2xl border border-slate-700/50">
+                         <Youtube className="text-red-500 shrink-0" size={20} />
+                         <input className="bg-transparent w-full text-white outline-none text-sm" placeholder="Youtube URL" value={settings.youtubeUrl} onChange={e => setSettings({...settings, youtubeUrl: e.target.value})} />
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <button type="submit" className="w-full py-5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-2xl font-bold hover:from-blue-700 hover:to-blue-800 transition-all shadow-xl flex items-center justify-center gap-3 active:scale-[0.98]">
-                <Save size={24} /> সেটিংস সেভ করুন
-              </button>
-            </form>
+
+                {/* Dynamic Footer Links */}
+                <hr className="border-slate-800" />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                       <h3 className="text-green-400 font-bold text-sm uppercase tracking-widest">গুরুত্বপূর্ণ লিংকসমূহ</h3>
+                       <button type="button" onClick={() => addLink('importantLinks')} className="p-1 bg-green-500/10 text-green-500 rounded-full hover:bg-green-500 hover:text-white transition-all"><Plus size={16} /></button>
+                    </div>
+                    <div className="space-y-3">
+                      {settings.importantLinks.map((link, idx) => (
+                        <div key={idx} className="flex gap-2 items-center">
+                          <input className="flex-1 bg-slate-800 border-slate-700 text-white rounded-xl px-3 py-2 border text-sm" value={link.label} onChange={e => handleLinkChange('importantLinks', idx, 'label', e.target.value)} />
+                          <input className="flex-[2] bg-slate-800 border-slate-700 text-white rounded-xl px-3 py-2 border text-sm" value={link.url} onChange={e => handleLinkChange('importantLinks', idx, 'url', e.target.value)} />
+                          <button type="button" onClick={() => removeLink('importantLinks', idx)} className="text-slate-500 hover:text-red-500"><Trash2 size={16} /></button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                       <h3 className="text-blue-400 font-bold text-sm uppercase tracking-widest">পপুলার ক্যাটাগরি লিংক</h3>
+                       <button type="button" onClick={() => addLink('popularCategories')} className="p-1 bg-blue-500/10 text-blue-500 rounded-full hover:bg-blue-500 hover:text-white transition-all"><Plus size={16} /></button>
+                    </div>
+                    <div className="space-y-3">
+                      {settings.popularCategories.map((link, idx) => (
+                        <div key={idx} className="flex gap-2 items-center">
+                          <input className="flex-1 bg-slate-800 border-slate-700 text-white rounded-xl px-3 py-2 border text-sm" value={link.label} onChange={e => handleLinkChange('popularCategories', idx, 'label', e.target.value)} />
+                          <input className="flex-[2] bg-slate-800 border-slate-700 text-white rounded-xl px-3 py-2 border text-sm" value={link.url} onChange={e => handleLinkChange('popularCategories', idx, 'url', e.target.value)} />
+                          <button type="button" onClick={() => removeLink('popularCategories', idx)} className="text-slate-500 hover:text-red-500"><Trash2 size={16} /></button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <button type="submit" className="w-full py-5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-2xl font-bold hover:from-blue-700 hover:to-blue-800 transition-all shadow-xl flex items-center justify-center gap-3 active:scale-[0.98]">
+                  <Save size={24} /> সেটিংস সেভ করুন
+                </button>
+              </form>
+            </div>
           </div>
         )}
 
@@ -424,7 +534,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
               {[
                 { label: 'মোট পণ্য', val: products.length, icon: Package, color: 'text-orange-500', bg: 'bg-orange-500/10' },
                 { label: 'ক্যাটাগরি', val: categories.length, icon: Layers, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-                { label: 'ব্যানার স্লাইড', val: slides.length, icon: ImageIcon, color: 'text-purple-500', bg: 'bg-purple-500/10' },
+                { label: 'ব্যানার স্লাইড', val: slides.length, icon: Monitor, color: 'text-purple-500', bg: 'bg-purple-500/10' },
                 { label: 'ফিচারসমূহ', val: features.length, icon: Smartphone, color: 'text-green-500', bg: 'bg-green-500/10' },
               ].map((stat, i) => (
                 <div key={i} className="bg-slate-900 p-8 rounded-3xl border border-slate-800 hover:border-slate-700 transition-all group">
@@ -449,16 +559,6 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
               </div>
             </div>
           </div>
-        )}
-        
-        {/* Placeholder for Hero and Features if needed */}
-        {activeTab !== 'dashboard' && activeTab !== 'settings' && activeTab !== 'products' && activeTab !== 'categories' && !isAdding && (
-           <div className="flex flex-col items-center justify-center py-32 bg-slate-900/30 rounded-3xl border border-slate-800 border-dashed">
-             <div className="p-6 bg-slate-800 rounded-full mb-6 text-slate-600">
-                <SettingsIcon size={48} />
-             </div>
-             <p className="text-slate-400 text-lg font-medium">{activeTab} ম্যানেজ করার জন্য বাটনটি ব্যবহার করুন।</p>
-           </div>
         )}
       </main>
     </div>

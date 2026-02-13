@@ -37,6 +37,11 @@ export interface Slide {
   cta: string;
 }
 
+export interface LinkItem {
+  label: string;
+  url: string;
+}
+
 export interface SiteSettings {
   logoUrl: string;
   logoText: string;
@@ -44,4 +49,14 @@ export interface SiteSettings {
   serviceButtonText: string;
   serviceButtonLink: string;
   contactNumber: string;
+  // Footer & Contact Settings
+  footerAbout: string;
+  address: string;
+  email: string;
+  importantLinks: LinkItem[];
+  popularCategories: LinkItem[];
+  facebookUrl: string;
+  instagramUrl: string;
+  youtubeUrl: string;
+  twitterUrl: string;
 }
