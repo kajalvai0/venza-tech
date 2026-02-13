@@ -18,7 +18,7 @@ export interface Category {
   name: string;
   count: string;
   image: string;
-  iconName: string; // Changed to string to store icon name for persistence simulation
+  iconName: string;
 }
 
 export interface Feature {
@@ -35,4 +35,13 @@ export interface Slide {
   highlight: string;
   image: string;
   cta: string;
+}
+
+export interface SiteSettings {
+  logoUrl: string;
+  logoText: string;
+  useImageLogo: boolean;
+  serviceButtonText: string;
+  serviceButtonLink: string;
+  contactNumber: string;
 }

@@ -1,5 +1,14 @@
 
-import { Product, Category, Feature, Slide } from './types';
+import { Product, Category, Feature, Slide, SiteSettings } from './types';
+
+export const INITIAL_SITE_SETTINGS: SiteSettings = {
+  logoUrl: 'https://cdn-icons-png.flaticon.com/512/3507/3507102.png',
+  logoText: 'VENZA TECH',
+  useImageLogo: false, // Set to false to prioritize the animated 3D Text Logo
+  serviceButtonText: 'এক্সচেঞ্জ অফার',
+  serviceButtonLink: '#',
+  contactNumber: '+৮৮০ ১৭৪৮-১২৩৪৫৬'
+};
 
 export const INITIAL_FEATURES: Feature[] = [
   {
@@ -22,7 +31,7 @@ export const INITIAL_FEATURES: Feature[] = [
   },
   {
     id: 'f4',
-    title: 'সহজ রিটার্ন',
+    title: 'সহ সহজ রিটার্ন',
     subtitle: '৭ দিনের গ্যারান্টি',
     iconName: 'RefreshCcw'
   }
@@ -42,20 +51,6 @@ export const INITIAL_CATEGORIES: Category[] = [
     count: '১৮০+ পণ্য',
     image: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&q=80',
     iconName: 'Laptop'
-  },
-  {
-    id: 'audio',
-    name: 'Audio & Headphone',
-    count: '১২০+ পণ্য',
-    image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&q=80',
-    iconName: 'Speaker'
-  },
-  {
-    id: 'smartwatch',
-    name: 'Smartwatch & Gadgets',
-    count: '৯৫+ পণ্য',
-    image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&q=80',
-    iconName: 'Watch'
   }
 ];
 
@@ -70,37 +65,6 @@ export const INITIAL_PRODUCTS: Product[] = [
     isFlashSale: true,
     rating: 4.9,
     reviews: 128
-  },
-  {
-    id: '2',
-    name: 'iPhone 15 Pro Max',
-    price: 165000,
-    originalPrice: 175000,
-    image: 'https://images.unsplash.com/photo-1696446701796-da61225697cc?w=800&q=80',
-    category: 'Mobile',
-    isFlashSale: true,
-    rating: 4.8,
-    reviews: 210
-  },
-  {
-    id: '3',
-    name: 'MacBook Air M3',
-    price: 145000,
-    image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&q=80',
-    category: 'Laptop',
-    rating: 5.0,
-    reviews: 85
-  },
-  {
-    id: '4',
-    name: 'Sony WH-1000XM5',
-    price: 28000,
-    originalPrice: 32000,
-    image: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=800&q=80',
-    category: 'Audio',
-    isFlashSale: true,
-    rating: 4.7,
-    reviews: 450
   }
 ];
 
@@ -117,9 +81,5 @@ export const INITIAL_SLIDES: Slide[] = [
 
 export const BRANDS = [
   { name: 'Samsung', logo: 'https://upload.wikimedia.org/wikipedia/commons/2/24/Samsung_Logo.svg' },
-  { name: 'Apple', logo: 'https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg' },
-  { name: 'Xiaomi', logo: 'https://upload.wikimedia.org/wikipedia/commons/a/ae/Xiaomi_logo_%282021-%29.svg' },
-  { name: 'OnePlus', logo: 'https://upload.wikimedia.org/wikipedia/commons/e/ea/OnePlus_logo.svg' },
-  { name: 'Sony', logo: 'https://upload.wikimedia.org/wikipedia/commons/c/c1/Sony_logo.svg' },
-  { name: 'Huawei', logo: 'https://upload.wikimedia.org/wikipedia/commons/0/00/Huawei_logo.svg' }
+  { name: 'Apple', logo: 'https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg' }
 ];
