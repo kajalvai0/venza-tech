@@ -6,6 +6,7 @@ import FeatureBar from './components/FeatureBar';
 import CategoryGrid from './components/CategoryGrid';
 import FlashSale from './components/FlashSale';
 import ProductCard from './components/ProductCard';
+import FounderSection from './components/FounderSection';
 import BrandShowcase from './components/BrandShowcase';
 import Newsletter from './components/Newsletter';
 import Footer from './components/Footer';
@@ -89,6 +90,9 @@ const App: React.FC = () => {
             </button>
           </div>
         </section>
+
+        {/* Founder & CEO Section */}
+        <FounderSection settings={settings} />
 
         <BrandShowcase />
         <Newsletter />

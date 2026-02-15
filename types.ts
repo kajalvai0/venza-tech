@@ -59,4 +59,10 @@ export interface SiteSettings {
   instagramUrl: string;
   youtubeUrl: string;
   twitterUrl: string;
+  // Founder Settings
+  founderName: string;
+  founderRole: string;
+  founderBio: string;
+  founderImageUrl: string;
+  showFounder: boolean;
 }

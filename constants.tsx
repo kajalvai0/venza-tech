@@ -28,7 +28,13 @@ export const INITIAL_SITE_SETTINGS: SiteSettings = {
     { label: 'হেডফোন', url: '#' },
     { label: 'স্মার্টওয়াচ', url: '#' },
     { label: 'ক্যামেরা', url: '#' }
-  ]
+  ],
+  // Founder Default Data
+  founderName: 'Md. Sahidul Islam',
+  founderRole: 'Founder & CEO, Venza Tech',
+  founderBio: 'ভেনজা টেক-এর যাত্রা শুরু হয়েছে গ্রাহকদের হাতে সেরা টেকনোলজি পৌঁছে দেওয়ার স্বপ্ন নিয়ে। আমরা বিশ্বাস করি প্রযুক্তির সঠিক ব্যবহার জীবনকে সহজ এবং সুন্দর করে তোলে। আমাদের সাথে থাকার জন্য ধন্যবাদ।',
+  founderImageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80', // Replace with user provided image path in production
+  showFounder: true
 };
 
 export const INITIAL_FEATURES: Feature[] = [
